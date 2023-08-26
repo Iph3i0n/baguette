@@ -8,6 +8,7 @@ import { Assert, IsObject, IsRecord, IsString } from "@ipheion/safe-type";
 
 const IsPostSeries = IsObject({
   url: IsString,
+  slug: IsString,
   title: IsString,
   template: IsString,
   content: IsRecord(IsString, IsString),
@@ -35,8 +36,9 @@ export default class SeriesController extends Controller {
   @Handler("POST")
   async Post(request: Hapi.Request, h: Hapi.ResponseToolkit, _: any, data: unknown) {
     Assert(IsPostSeries, data);
-    const input = new Series(data.title, {
+    const input = new Series(data.slug, {
       url: data.url,
+      title: data.title,
       template: new Template(data.template),
       content: data.content,
       articles: [],
@@ -58,6 +60,7 @@ export default class SeriesController extends Controller {
     Assert(IsPutSeries, data);
     const input = new Series(request.params.id);
     input.url = data.url;
+    input.title = data.title;
     input.template = new Template(data.template);
     input.content = data.content;
     input.item_template = new Template(data.item_template);

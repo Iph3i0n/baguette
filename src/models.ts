@@ -61,6 +61,9 @@ export class Author extends Jsonified {
 
 export class Page extends Jsonified {
   @Serialisable(IsString)
+  accessor title!: string;
+
+  @Serialisable(IsString)
   accessor url!: string;
 
   @Serialisable(IsDate)
@@ -80,8 +83,9 @@ export class Page extends Jsonified {
 
   get Dto() {
     return {
+      slug: this.physical_id,
       url: this.url,
-      title: this.physical_id,
+      title: this.title,
       publish_date: this.publish_date,
       author: this.author.Dto,
       tags: this.tags.map((t) => t.Dto),
@@ -125,6 +129,9 @@ export class Article extends Jsonified {
 
 export class Series extends Jsonified {
   @Serialisable(IsString)
+  accessor title!: string;
+
+  @Serialisable(IsString)
   accessor url!: string;
 
   @Child(Template)
@@ -141,7 +148,8 @@ export class Series extends Jsonified {
 
   get Dto() {
     return {
-      title: this.physical_id,
+      slug: this.physical_id,
+      title: this.title,
       url: this.url,
       content: this.content,
       template: this.template.Dto,

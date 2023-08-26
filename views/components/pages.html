@@ -10,6 +10,9 @@
   <f-form url="/api/pages" success-url="/pages" slot="create">
     <l-row>
       <l-col xs="12">
+        <f-input name="slug" validate="^[a-z0-9\-]+$">Slug</f-input>
+      </l-col>
+      <l-col xs="12">
         <f-input name="url">Url</f-input>
       </l-col>
       <l-col xs="12">
@@ -41,7 +44,7 @@
             <f-input name="url" prefill=":this.state.page.url">Url</f-input>
           </l-col>
           <l-col xs="12">
-            <f-input name="title" prefill=":this.state.page.title" disabled>Title</f-input>
+            <f-input name="title" prefill=":this.state.page.title">Title</f-input>
           </l-col>
           <l-col xs="12">
             <f-select name="author" options=":this.state.data.authors.map(a => ({ text: a, value: a }))" prefill=":this.state.page.author.slug">

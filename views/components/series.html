@@ -5,10 +5,13 @@
         <u-text use=":this.state.series"></u-text>
       </t-link>
     </u-each>
-    <t-link href="/series" class="body" spa>Create Page</t-link>
+    <t-link href="/series" class="body" spa>Create Series</t-link>
   </d-listgroup>
   <f-form url="/api/series" success-url="/series" slot="create">
     <l-row>
+      <l-col xs="12">
+        <f-input name="slug" validate="^[a-z0-9\-]+$">Slug</f-input>
+      </l-col>
       <l-col xs="12">
         <f-input name="url">Url</f-input>
       </l-col>
@@ -101,7 +104,7 @@
           <f-form url="/api/series/{{this.state.route.params.name}}/articles" success-url="/series/details/{{this.state.route.params.name}}/articles">
             <l-row>
               <l-col xs="12">
-                <f-input name="slug">slug</f-input>
+                <f-input name="slug" validate="^[a-z0-9\-]+$">Slug</f-input>
               </l-col>
               <l-col xs="12">
                 <f-input name="title">Title</f-input>
@@ -177,6 +180,9 @@
               method="put"
             >
               <l-row>
+                <l-col xs="12">
+                  <f-input name="url" prefill=":this.state.article.url">URL</f-input>
+                </l-col>
                 <l-col xs="12">
                   <f-input name="title" prefill=":this.state.article.title">Title</f-input>
                 </l-col>

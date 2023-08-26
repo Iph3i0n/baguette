@@ -7,6 +7,7 @@ import { Author, Page, Tag, Template } from "../models";
 import { Assert, IsArray, IsObject, IsRecord, IsString } from "@ipheion/safe-type";
 
 const IsPostPage = IsObject({
+  slug: IsString,
   url: IsString,
   title: IsString,
   author: IsString,
@@ -37,7 +38,8 @@ export default class SitePageController extends Controller {
   @Handler("POST")
   async Post(request: Hapi.Request, h: Hapi.ResponseToolkit, _: any, data: unknown) {
     Assert(IsPostPage, data);
-    const input = new Page(data.title, {
+    const input = new Page(data.slug, {
+      title: data.title,
       url: data.url,
       publish_date: new Date(),
       author: new Author(data.author),
@@ -63,6 +65,7 @@ export default class SitePageController extends Controller {
   async Put(request: Hapi.Request, h: Hapi.ResponseToolkit, _: any, data: unknown) {
     Assert(IsPutPage, data);
     const input = new Page(request.params.id);
+    input.title = data.title;
     input.url = data.url;
     input.author = new Author(data.author);
     input.tags = data.tags

@@ -12,9 +12,9 @@
     <f-form url="/api/templates" success-url="/templates">
       <l-row>
         <l-col xs="12">
-          <f-input name="name" required>
+          <f-input name="name" validate="^[a-z0-9\-]+$" required>
             Name
-            <span slot="help">Surfaced to the user</span>
+            <span slot="help">To identify in the builder</span>
             <span slot="empty">Please enter the name</span>
           </f-input>
         </l-col>
