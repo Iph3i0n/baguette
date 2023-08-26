@@ -9,14 +9,16 @@ import { Start } from "./server";
 import SeriesController from "./controllers/series";
 import ArticlesController from "./controllers/articles";
 
-Start(
-  AppData,
-  FieldsController,
-  TemplatesController,
-  AuthorsController,
-  TagsController,
-  SitePageController,
-  SeriesController,
-  ArticlesController,
-  PagesController
-);
+export function StartDevelopmentServer() {
+  Start(
+    AppData,
+    FieldsController,
+    TemplatesController,
+    AuthorsController,
+    TagsController,
+    SitePageController,
+    SeriesController,
+    ArticlesController,
+    PagesController
+  );
+}

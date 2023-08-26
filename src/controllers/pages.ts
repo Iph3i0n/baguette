@@ -22,6 +22,6 @@ export default class PagesController extends Controller {
   @Handler("GET", "/bakery.js")
   async Bakery(request: Hapi.Request, h: Hapi.ResponseToolkit) {
     h.response().header("Content-Type", "application/javascript");
-    return fs.readFileSync(path.resolve("../../bakery/docs/dist/bundle.min.js"), "utf-8");
+    return fs.readFileSync(path.resolve("../bakery/docs/dist/bundle.min.js"), "utf-8");
   }
 }
