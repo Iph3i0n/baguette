@@ -1,0 +1,70 @@
+<l-templated use="/components/page-layout" remote>
+  <d-listgroup slot="list">
+    <u-each subject=":this.state.data.pages" name="page">
+      <t-link href="/pages/details/{{this.state.page}}" spa>
+        <u-text use=":this.state.page"></u-text>
+      </t-link>
+    </u-each>
+    <t-link href="/pages" class="body" spa>Create Page</t-link>
+  </d-listgroup>
+  <f-form url="/api/pages" success-url="/pages" slot="create">
+    <l-row>
+      <l-col xs="12">
+        <f-input name="url">Url</f-input>
+      </l-col>
+      <l-col xs="12">
+        <f-input name="title">Title</f-input>
+      </l-col>
+      <l-col xs="12">
+        <f-select name="author" options=":this.state.data.authors.map(a => ({ text: a, value: a }))">
+          <span slot="label">Author</span>
+        </f-select>
+      </l-col>
+      <l-col xs="12">
+        <f-multiselect name="tags" options=":this.state.data.tags.map(a => ({ text: a, value: a }))">
+          <span slot="label">Tags</span>
+        </f-multiselect>
+      </l-col>
+    </l-row>
+    <l-templated use="/components/template-creator" remote></l-templated>
+    <l-row>
+      <l-col xs="12">
+        <f-button type="submit">Create</f-button>
+      </l-col>
+    </l-row>
+  </f-form>
+  <u-if check=":this.state.route.params.name" slot="update">
+    <u-fetch url="/api/pages/{{this.state.route.params.name}}" name="page">
+      <f-form url="/api/pages/{{this.state.route.params.name}}" method="put" success-url="/pages">
+        <l-row>
+          <l-col xs="12">
+            <f-input name="url" prefill=":this.state.page.url">Url</f-input>
+          </l-col>
+          <l-col xs="12">
+            <f-input name="title" prefill=":this.state.page.title" disabled>Title</f-input>
+          </l-col>
+          <l-col xs="12">
+            <f-select name="author" options=":this.state.data.authors.map(a => ({ text: a, value: a }))" prefill=":this.state.page.author.slug">
+              <span slot="label">Author</span>
+            </f-select>
+          </l-col>
+          <l-col xs="12">
+            <f-multiselect
+              name="tags"
+              options=":this.state.data.tags.map(a => ({ text: a, value: a }))"
+              prefill=":this.state.page.tags.map(t => t.slug).join(',')"
+            >
+              <span slot="label">Tags</span>
+            </f-multiselect>
+          </l-col>
+        </l-row>
+        <l-templated use="/components/template-creator" remote></l-templated>
+        <l-row>
+          <l-col xs="12">
+            <f-button type="submit">Create</f-button>
+          </l-col>
+        </l-row>
+      </f-form>
+    </u-fetch>
+  </u-if>
+</l-templated>

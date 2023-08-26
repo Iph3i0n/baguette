@@ -1,0 +1,246 @@
+<l-templated use="/components/page-layout" remote>
+  <d-listgroup slot="list">
+    <u-each subject=":this.state.data.series" name="series">
+      <t-link href="/series/details/{{this.state.series}}" spa>
+        <u-text use=":this.state.series"></u-text>
+      </t-link>
+    </u-each>
+    <t-link href="/series" class="body" spa>Create Page</t-link>
+  </d-listgroup>
+  <f-form url="/api/series" success-url="/series" slot="create">
+    <l-row>
+      <l-col xs="12">
+        <f-input name="url">Url</f-input>
+      </l-col>
+      <l-col xs="12">
+        <f-input name="title">Title</f-input>
+      </l-col>
+      <l-col xs="12">
+        <f-singleselect name="item_template" options=":this.state.data.templates.map(a => ({ text: a, value: a }))">
+          <span slot="label">Template For Articles</span>
+        </f-singleselect>
+      </l-col>
+    </l-row>
+    <l-templated use="/components/template-creator" remote></l-templated>
+    <l-row>
+      <l-col xs="12">
+        <f-button type="submit">Create</f-button>
+      </l-col>
+    </l-row>
+  </f-form>
+  <u-if check=":this.state.route.params.name" slot="update">
+    <u-fetch url="/api/series/{{this.state.route.params.name}}" name="page">
+      <u-route path="/" exact>
+        <l-row>
+          <l-col xs="12">
+            <t-crumbs>
+              <span>Series</span>
+            </t-crumbs>
+          </l-col>
+          <l-col xs="12">
+            <f-button href="/series/details/{{this.state.route.params.name}}/articles" spa>Articles</f-button>
+          </l-col>
+        </l-row>
+        <f-form url="/api/series/{{this.state.route.params.name}}" method="put" success-url="/series">
+          <l-row>
+            <l-col xs="12">
+              <f-input name="url" prefill=":this.state.page.url">Url</f-input>
+            </l-col>
+            <l-col xs="12">
+              <f-input name="title" prefill=":this.state.page.title" disabled>Title</f-input>
+            </l-col>
+            <l-col xs="12">
+              <f-singleselect
+                name="item_template"
+                options=":this.state.data.templates.map(a => ({ text: a, value: a }))"
+                prefill=":this.state.page.template.name ?? ''"
+              >
+                <span slot="label">Template For Articles</span>
+              </f-singleselect>
+            </l-col>
+          </l-row>
+          <l-templated use="/components/template-creator" remote></l-templated>
+          <l-row>
+            <l-col xs="12">
+              <f-button type="submit">Create</f-button>
+            </l-col>
+          </l-row>
+        </f-form>
+      </u-route>
+      <u-route path="/articles" exact>
+        <l-row>
+          <l-col xs="12">
+            <t-crumbs>
+              <t-link href="/series/details/{{this.state.route.params.name}}" spa>Series</t-link>
+              <span>Articles</span>
+            </t-crumbs>
+          </l-col>
+        </l-row>
+        <u-fetch url="/api/series/{{this.state.route.params.name}}/articles" name="articles">
+          <d-listgroup>
+            <u-each subject=":this.state.articles" name="article">
+              <t-link href="/series/details/{{this.state.route.params.name}}/articles/details/{{this.state.article}}" spa>
+                <u-text use=":this.state.article"></u-text>
+              </t-link>
+            </u-each>
+            <t-link href="/series/details/{{this.state.route.params.name}}/articles/create" class="body" spa>Create Article</t-link>
+          </d-listgroup>
+        </u-fetch>
+      </u-route>
+      <u-route path="/articles/create" exact>
+        <l-row>
+          <l-col xs="12">
+            <t-crumbs>
+              <t-link href="/series/details/{{this.state.route.params.name}}" spa>Series</t-link>
+              <t-link href="/series/details/{{this.state.route.params.name}}/articles" spa>Articles</t-link>
+              <span>Create</span>
+            </t-crumbs>
+          </l-col>
+        </l-row>
+        <div>
+          <f-form url="/api/series/{{this.state.route.params.name}}/articles" success-url="/series/details/{{this.state.route.params.name}}/articles">
+            <l-row>
+              <l-col xs="12">
+                <f-input name="slug">slug</f-input>
+              </l-col>
+              <l-col xs="12">
+                <f-input name="title">Title</f-input>
+              </l-col>
+              <l-col xs="12">
+                <f-select name="author" options=":this.state.data.authors.map(a => ({ text: a, value: a }))">
+                  <span slot="label">Author</span>
+                </f-select>
+              </l-col>
+              <l-col xs="12">
+                <f-multiselect name="tags" options=":this.state.data.tags.map(a => ({ text: a, value: a }))">
+                  <span slot="label">Tags</span>
+                </f-multiselect>
+              </l-col>
+              <l-col xs="12">
+                <d-card>
+                  <span slot="title">Content</span>
+                  <l-row>
+                    <u-each
+                      subject=":Object.keys(this.state.page.item_template.fields).map(k => ({ name: k, type: this.state.page.item_template.fields[k] }))"
+                      name="field"
+                    >
+                      <l-col xs="12">
+                        <u-if check=":this.state.field.type === 'text'">
+                          <f-input name=":`content.${this.state.field.name}`">
+                            <u-text use=":this.state.field.name"></u-text>
+                          </f-input>
+                        </u-if>
+                        <u-if check=":this.state.field.type === 'rich_text'">
+                          <f-richtext name=":`content.${this.state.field.name}`">
+                            <u-text use=":this.state.field.name"></u-text>
+                          </f-richtext>
+                        </u-if>
+                        <u-if check=":this.state.field.type === 'boolean'">
+                          <f-toggle name=":`content.${this.state.field.name}`">
+                            <u-text use=":this.state.field.name"></u-text>
+                            <span slot="on">On</span>
+                            <span slot="off">Off</span>
+                          </f-toggle>
+                        </u-if>
+                        <u-if check=":this.state.field.type === 'number'">
+                          <f-numeric name=":`content.${this.state.field.name}`">
+                            <u-text use=":this.state.field.name"></u-text>
+                          </f-numeric>
+                        </u-if>
+                      </l-col>
+                    </u-each>
+                  </l-row>
+                </d-card>
+              </l-col>
+              <l-col xs="12">
+                <f-button type="submit">Create</f-button>
+              </l-col>
+            </l-row>
+          </f-form>
+        </div>
+      </u-route>
+      <u-route path="/articles/details/:article" exact>
+        <l-row>
+          <l-col xs="12">
+            <t-crumbs>
+              <t-link href="/series/details/{{this.state.route.params.name}}" spa>Series</t-link>
+              <t-link href="/series/details/{{this.state.route.params.name}}/articles" spa>Articles</t-link>
+              <span>Update</span>
+            </t-crumbs>
+          </l-col>
+        </l-row>
+        <u-fetch url="/api/series/{{this.state.route.params.name}}/articles/{{this.state.route.params.article}}" name="article">
+          <div>
+            <f-form
+              url="/api/series/{{this.state.route.params.name}}/articles/{{this.state.route.params.article}}"
+              success-url="/series/details/{{this.state.route.params.name}}/articles"
+              method="put"
+            >
+              <l-row>
+                <l-col xs="12">
+                  <f-input name="title" prefill=":this.state.article.title">Title</f-input>
+                </l-col>
+                <l-col xs="12">
+                  <f-select name="author" options=":this.state.data.authors.map(a => ({ text: a, value: a }))" prefill=":this.state.article.author.slug">
+                    <span slot="label">Author</span>
+                  </f-select>
+                </l-col>
+                <l-col xs="12">
+                  <f-multiselect
+                    name="tags"
+                    options=":this.state.data.tags.map(a => ({ text: a, value: a }))"
+                    prefill=":this.state.article.tags.map(t => t.slug).join(',')"
+                  >
+                    <span slot="label">Tags</span>
+                  </f-multiselect>
+                </l-col>
+                <l-col xs="12">
+                  <d-card>
+                    <span slot="title">Content</span>
+                    <l-row>
+                      <u-each
+                        subject=":Object.keys(this.state.page.item_template.fields).map(k => ({ name: k, type: this.state.page.item_template.fields[k] }))"
+                        name="field"
+                      >
+                        <l-col xs="12">
+                          <u-if check=":this.state.field.type === 'text'">
+                            <f-input name=":`content.${this.state.field.name}`" prefill=":this.state.article?.content[this.state.field.name] ?? window.empty">
+                              <u-text use=":this.state.field.name"></u-text>
+                            </f-input>
+                          </u-if>
+                          <u-if check=":this.state.field.type === 'rich_text'">
+                            <f-richtext
+                              name=":`content.${this.state.field.name}`"
+                              prefill=":this.state.article?.content[this.state.field.name] ?? window.empty"
+                            >
+                              <u-text use=":this.state.field.name"></u-text>
+                            </f-richtext>
+                          </u-if>
+                          <u-if check=":this.state.field.type === 'boolean'">
+                            <f-toggle name=":`content.${this.state.field.name}`" prefill=":this.state.article?.content[this.state.field.name] ?? window.empty">
+                              <u-text use=":this.state.field.name"></u-text>
+                              <span slot="on">On</span>
+                              <span slot="off">Off</span>
+                            </f-toggle>
+                          </u-if>
+                          <u-if check=":this.state.field.type === 'number'">
+                            <f-numeric name=":`content.${this.state.field.name}`" prefill=":this.state.article?.content[this.state.field.name] ?? window.empty">
+                              <u-text use=":this.state.field.name"></u-text>
+                            </f-numeric>
+                          </u-if>
+                        </l-col>
+                      </u-each>
+                    </l-row>
+                  </d-card>
+                </l-col>
+                <l-col xs="12">
+                  <f-button type="submit">Update</f-button>
+                </l-col>
+              </l-row>
+            </f-form>
+          </div>
+        </u-fetch>
+      </u-route>
+    </u-fetch>
+  </u-if>
+</l-templated>

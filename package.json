@@ -1,0 +1,31 @@
+{
+  "name": "@ipheion/baguette",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "rm -rf dist && tsc",
+    "dev": "npm run build && (cd ./demo && node ../)"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.1",
+    "@types/jest": "^29.5.3",
+    "@types/lodash": "^4.14.197",
+    "@types/mustache": "^4.2.2",
+    "@types/node": "^20.4.8",
+    "jest": "^29.6.2",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "@hapi/hapi": "^21.3.2",
+    "@ipheion/safe-type": "^2.2.1",
+    "fs-extra": "^11.1.1",
+    "lodash": "^4.17.21"
+  },
+  "prettier": {
+    "printWidth": 160,
+    "htmlWhitespaceSensitivity": "ignore"
+  }
+}

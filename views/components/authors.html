@@ -1,0 +1,62 @@
+<l-templated use="/components/page-layout" remote>
+  <d-listgroup slot="list">
+    <u-each subject=":this.state.data.authors" name="author">
+      <t-link href="/authors/details/{{this.state.author}}" spa>
+        <u-text use=":this.state.author"></u-text>
+      </t-link>
+    </u-each>
+    <t-link href="/authors" class="body" spa>Create Author</t-link>
+  </d-listgroup>
+  <f-form url="/api/authors" success-url="/authors" slot="create">
+    <l-row>
+      <l-col xs="12">
+        <f-input name="slug" validate="^[a-z0-9\-]+$" required>
+          Slug
+          <span slot="help">Only lower case letters, numbers, and dashes allowed.</span>
+          <span slot="invalid">Please only enter letters, numbers, and dashes.</span>
+          <span slot="empty">Please enter a slug.</span>
+        </f-input>
+      </l-col>
+      <l-col xs="12">
+        <f-input name="name" required>
+          Name
+          <span slot="help">Surfaced to the user</span>
+          <span slot="empty">Please enter the name</span>
+        </f-input>
+      </l-col>
+      <l-col xs="12">
+        <f-date name="dob">Date of Birth (Optional)</f-date>
+      </l-col>
+      <l-col xs="12">
+        <f-input name="job_title">Job Title (Optional)</f-input>
+      </l-col>
+      <l-col xs="12">
+        <f-button type="submit">Create</f-button>
+      </l-col>
+    </l-row>
+  </f-form>
+  <u-if check=":this.state.route.params.name" slot="update">
+    <u-fetch url="/api/authors/{{this.state.route.params.name}}" name="author">
+      <f-form url="/api/authors/{{this.state.route.params.name}}" method="put" success-url="/authors">
+        <l-row>
+          <l-col xs="12">
+            <f-input name="name" prefill=":this.state.author.name" required>
+              Name
+              <span slot="help">Surfaced to the user</span>
+              <span slot="empty">Please enter the name</span>
+            </f-input>
+          </l-col>
+          <l-col xs="12">
+            <f-date name="dob" prefill=":this.state.author.dob">Date of Birth (Optional)</f-date>
+          </l-col>
+          <l-col xs="12">
+            <f-input name="job_title" prefill=":this.state.author.job_title">Job Title (Optional)</f-input>
+          </l-col>
+          <l-col xs="12">
+            <f-button type="submit">Update</f-button>
+          </l-col>
+        </l-row>
+      </f-form>
+    </u-fetch>
+  </u-if>
+</l-templated>

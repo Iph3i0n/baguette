@@ -1,0 +1,50 @@
+<l-templated use="/components/page-layout" remote>
+  <d-listgroup slot="list">
+    <u-each subject=":this.state.data.tags" name="tag">
+      <t-link href="/tags/details/{{this.state.tag}}" spa>
+        <u-text use=":this.state.tag"></u-text>
+      </t-link>
+    </u-each>
+    <t-link href="/tags" class="body" spa>Create Tag</t-link>
+  </d-listgroup>
+  <f-form url="/api/tags" success-url="/tags" slot="create">
+    <l-row>
+      <l-col xs="12">
+        <f-input name="slug" validate="^[a-z0-9\-]+$" required>
+          Slug
+          <span slot="help">Only lower case letters, numbers, and dashes allowed.</span>
+          <span slot="invalid">Please only enter letters, numbers, and dashes.</span>
+          <span slot="empty">Please enter a slug.</span>
+        </f-input>
+      </l-col>
+      <l-col xs="12">
+        <f-input name="name" required>
+          Name
+          <span slot="help">Surfaced to the user</span>
+          <span slot="empty">Please enter the name</span>
+        </f-input>
+      </l-col>
+      <l-col xs="12">
+        <f-button type="submit">Create</f-button>
+      </l-col>
+    </l-row>
+  </f-form>
+  <u-if check=":this.state.route.params.name" slot="update">
+    <u-fetch url="/api/tags/{{this.state.route.params.name}}" name="tag">
+      <f-form url="/api/tags/{{this.state.route.params.name}}" method="put" success-url="/tags">
+        <l-row>
+          <l-col xs="12">
+            <f-input name="name" prefill=":this.state.tag.name" required>
+              Name
+              <span slot="help">Surfaced to the user</span>
+              <span slot="empty">Please enter the name</span>
+            </f-input>
+          </l-col>
+          <l-col xs="12">
+            <f-button type="submit">Update</f-button>
+          </l-col>
+        </l-row>
+      </f-form>
+    </u-fetch>
+  </u-if>
+</l-templated>

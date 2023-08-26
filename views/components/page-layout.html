@@ -1,0 +1,13 @@
+<l-row>
+  <l-col xs="12" md="3" lg="2">
+    <slot name="list"></slot>
+  </l-col>
+  <l-col xs="12" md="9" lg="10">
+    <u-route path="/" exact>
+      <slot name="create"></slot>
+    </u-route>
+    <u-route path="/details/:name">
+      <slot name="update"></slot>
+    </u-route>
+  </l-col>
+</l-row>

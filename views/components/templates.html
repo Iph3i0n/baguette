@@ -1,0 +1,134 @@
+<l-templated use="/components/page-layout" remote>
+  <d-listgroup slot="list">
+    <u-each subject=":this.state.data.templates" name="template">
+      <t-link href="/templates/details/{{this.state.template}}" spa>
+        <u-text use=":this.state.template"></u-text>
+      </t-link>
+    </u-each>
+    <t-link href="/templates" class="body" spa>Create Template</t-link>
+  </d-listgroup>
+
+  <u-global var="__current_fields" name="fields" default="[{ name: 'content', type: 'text' }]" slot="create">
+    <f-form url="/api/templates" success-url="/templates">
+      <l-row>
+        <l-col xs="12">
+          <f-input name="name" required>
+            Name
+            <span slot="help">Surfaced to the user</span>
+            <span slot="empty">Please enter the name</span>
+          </f-input>
+        </l-col>
+        <l-col xs="12">
+          <t-heading level="h5">Fields</t-heading>
+        </l-col>
+      </l-row>
+      <u-each subject=":this.state.fields.map((f, i) => [f, i])" name="field">
+        <l-row>
+          <l-col xs="12">
+            <f-input name=":`fields[${this.state.field[1]}].name`" prefill=":this.state.field[0].name" required>Name</f-input>
+          </l-col>
+          <l-col xs="11">
+            <f-select
+              name=":`fields[${this.state.field[1]}].type`"
+              prefill=":this.state.field[0].type"
+              options=":this.state.data.data_types.map(d => ({ text: d, value: d }))"
+              required
+            >
+              <span slot="label">Type</span>
+            </f-select>
+          </l-col>
+          <l-col xs="1">
+            <f-button type="button" onclick="this.state.fields = this.state.fields.filter(f => f !== this.state.field)">-</f-button>
+          </l-col>
+        </l-row>
+      </u-each>
+      <l-row>
+        <l-col xs="12">
+          <d-panel>
+            <l-row>
+              <l-col xs="12">
+                <f-button type="button" onclick="this.state.fields = [...this.state.fields, { name: 'content', type: 'text' }]">+</f-button>
+              </l-col>
+            </l-row>
+          </d-panel>
+        </l-col>
+        <l-col xs="12">
+          <f-code name="template" language="html" height="20rem" requried>
+            Template
+            <span slot="help">The HTML rendered to the page</span>
+            <span slot="empty">Please enter a template</span>
+          </f-code>
+        </l-col>
+        <l-col xs="12">
+          <f-button type="submit">Create</f-button>
+        </l-col>
+      </l-row>
+    </f-form>
+  </u-global>
+
+  <u-if check=":this.state.route.params.name" slot="update">
+    <u-fetch url="/api/templates/{{this.state.route.params.name}}" name="template">
+      <f-form url="/api/templates/{{this.state.route.params.name}}" method="put" success-url="/block-types">
+        <l-row>
+          <l-col xs="12">
+            <f-input name="name" prefill=":this.state.template.name" disabled>Name</f-input>
+          </l-col>
+          <l-col xs="12">
+            <t-heading level="h5">Fields</t-heading>
+          </l-col>
+        </l-row>
+        <u-each subject=":this.state.template.fields.map((f, i) => [f, i])" name="field">
+          <l-row>
+            <l-col xs="12">
+              <f-input name=":`fields[${this.state.field[1]}].name`" prefill=":this.state.field[0].name" required>Name</f-input>
+            </l-col>
+            <l-col xs="11">
+              <f-select
+                name=":`fields[${this.state.field[1]}].type`"
+                prefill=":this.state.field[0].type"
+                options=":this.state.data.data_types.map(d => ({ text: d, value: d }))"
+                required
+              >
+                <span slot="label">Type</span>
+              </f-select>
+            </l-col>
+            <l-col xs="1">
+              <f-button
+                type="button"
+                onclick="this.state.template = { ...this.state.template, fields: this.state.template.fields.filter(f => f !== this.state.field) }"
+              >
+                -
+              </f-button>
+            </l-col>
+          </l-row>
+        </u-each>
+        <l-row>
+          <l-col xs="12">
+            <d-panel>
+              <l-row>
+                <l-col xs="12">
+                  <f-button
+                    type="button"
+                    onclick="this.state.template = { ...this.state.template, fields: [...this.state.template.fields, { name: '', type: 'rich_text' }] }"
+                  >
+                    +
+                  </f-button>
+                </l-col>
+              </l-row>
+            </d-panel>
+          </l-col>
+          <l-col xs="12">
+            <f-code name="template" language="html" prefill=":this.state.template.template" height="20rem" requried>
+              Template
+              <span slot="help">The HTML rendered to the page</span>
+              <span slot="empty">Please enter a template</span>
+            </f-code>
+          </l-col>
+          <l-col xs="12">
+            <f-button type="submit">Update</f-button>
+          </l-col>
+        </l-row>
+      </f-form>
+    </u-fetch>
+  </u-if>
+</l-templated>

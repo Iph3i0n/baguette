@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@ipheion/bakery@0.5.14"></script> -->
+    <script src="/bakery.js"></script>
+    <script>
+      window.empty = "";
+    </script>
+  </head>
+  <body>
+    <l-header>
+      <t-link href="/" spa>Home</t-link>
+      <t-link href="/pages" spa>Pages</t-link>
+      <t-link href="/series" spa>Series</t-link>
+      <t-link href="/authors" spa>Authors</t-link>
+      <t-link href="/tags" spa>Tags</t-link>
+      <t-link href="/templates" spa>Templates</t-link>
+    </l-header>
+    <u-fetch url="/api/app-data" name="data">
+      <div>
+        <l-container>
+          <u-route path="/pages">
+            <l-templated use="/components/pages" remote></l-templated>
+          </u-route>
+
+          <u-route path="/series">
+            <l-templated use="/components/series" remote></l-templated>
+          </u-route>
+
+          <u-route path="/authors">
+            <l-templated use="/components/authors" remote></l-templated>
+          </u-route>
+
+          <u-route path="/templates">
+            <l-templated use="/components/templates" remote></l-templated>
+          </u-route>
+
+          <u-route path="/tags">
+            <l-templated use="/components/tags" remote></l-templated>
+          </u-route>
+        </l-container>
+      </div>
+    </u-fetch>
+  </body>
+</html>
