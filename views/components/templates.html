@@ -69,7 +69,7 @@
 
   <u-if check=":this.state.route.params.name" slot="update">
     <u-fetch url="/api/templates/{{this.state.route.params.name}}" name="template">
-      <f-form url="/api/templates/{{this.state.route.params.name}}" method="put" success-url="/block-types">
+      <f-form url="/api/templates/{{this.state.route.params.name}}" method="put" success-url="/templates">
         <l-row>
           <l-col xs="12">
             <f-input name="name" prefill=":this.state.template.name" disabled>Name</f-input>
