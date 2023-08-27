@@ -1,5 +1,7 @@
-import { IsDate, IsOneOf, IsRecord, IsString, IsType, Optional } from "@ipheion/safe-type";
-import Jsonified, { Child, Children, Serialisable } from "./jsonified";
+import { Assert, IsDate, IsOneOf, IsRecord, IsString, IsType, Optional } from "@ipheion/safe-type";
+import Jsonified, { Child, Children, Serialisable, ValidJsonRecord } from "./jsonified";
+import Fs from "fs-extra";
+import Path from "path";
 
 export const DataTypes = ["text", "rich_text", "boolean", "number", "image"] as const;
 
@@ -8,11 +10,32 @@ export const IsDataType = IsOneOf(...DataTypes);
 export type DataType = IsType<typeof IsDataType>;
 
 export class Template extends Jsonified {
+  constructor(id: string, data?: ValidJsonRecord) {
+    if (data?.template) {
+      const code_path = Path.join("./TemplateCode", id + ".html");
+      Fs.outputFileSync(code_path, data.template.toString());
+      delete data.template;
+      data.__template = code_path;
+    }
+
+    super(id, data);
+  }
+
   @Serialisable(IsRecord(IsString, IsDataType))
   accessor fields!: Record<string, DataType>;
 
   @Serialisable(IsString)
-  accessor template!: string;
+  accessor __template!: string;
+
+  get template() {
+    return Fs.readFileSync(this.__template, "utf-8");
+  }
+
+  set template(value: string) {
+    const code_path = Path.join("./TemplateCode", this.physical_id + ".html");
+    Fs.outputFileSync(code_path, value);
+    this.__template = code_path;
+  }
 
   get Dto() {
     return {
@@ -60,6 +83,22 @@ export class Author extends Jsonified {
 }
 
 export class Page extends Jsonified {
+  constructor(id: string, data?: ValidJsonRecord) {
+    if (data?.content) {
+      const content = data.content;
+      delete data.content;
+      data.__content = {};
+      Assert(IsRecord(IsString, IsString), content);
+      for (const key in content) {
+        const input = Path.join("./PageContent", id, key + ".html");
+        Fs.outputFileSync(input, content[key]);
+        data.__content[key] = input;
+      }
+    }
+
+    super(id, data);
+  }
+
   @Serialisable(IsString)
   accessor title!: string;
 
@@ -79,7 +118,28 @@ export class Page extends Jsonified {
   accessor template!: Template;
 
   @Serialisable(IsRecord(IsString, IsString))
-  accessor content!: Record<string, string>;
+  accessor __content!: Record<string, string>;
+
+  get content() {
+    const result: Record<string, string> = {};
+    for (const key in this.__content) {
+      result[key] = Fs.readFileSync(this.__content[key], "utf-8");
+    }
+
+    return result;
+  }
+
+  set content(content: Record<string, string>) {
+    const result: Record<string, string> = {};
+    Assert(IsRecord(IsString, IsString), content);
+    for (const key in content) {
+      const input = Path.join("./PageContent", this.physical_id, key + ".html");
+      Fs.outputFileSync(input, content[key]);
+      result[key] = input;
+    }
+
+    this.__content = result;
+  }
 
   get Dto() {
     return {
@@ -96,6 +156,22 @@ export class Page extends Jsonified {
 }
 
 export class Article extends Jsonified {
+  constructor(id: string, data?: ValidJsonRecord) {
+    if (data?.content) {
+      const content = data.content;
+      delete data.content;
+      data.__content = {};
+      Assert(IsRecord(IsString, IsString), content);
+      for (const key in content) {
+        const input = Path.join("./ArticleContent", id, key + ".html");
+        Fs.outputFileSync(input, content[key]);
+        data.__content[key] = input;
+      }
+    }
+
+    super(id, data);
+  }
+
   @Serialisable(IsString)
   accessor title!: string;
 
@@ -112,7 +188,28 @@ export class Article extends Jsonified {
   accessor template!: Template;
 
   @Serialisable(IsRecord(IsString, IsString))
-  accessor content!: Record<string, string>;
+  accessor __content!: Record<string, string>;
+
+  get content() {
+    const result: Record<string, string> = {};
+    for (const key in this.__content) {
+      result[key] = Fs.readFileSync(this.__content[key], "utf-8");
+    }
+
+    return result;
+  }
+
+  set content(content: Record<string, string>) {
+    const result: Record<string, string> = {};
+    Assert(IsRecord(IsString, IsString), content);
+    for (const key in content) {
+      const input = Path.join("./ArticleContent", this.physical_id, key + ".html");
+      Fs.outputFileSync(input, content[key]);
+      result[key] = input;
+    }
+
+    this.__content = result;
+  }
 
   get Dto() {
     return {
@@ -128,6 +225,22 @@ export class Article extends Jsonified {
 }
 
 export class Series extends Jsonified {
+  constructor(id: string, data?: ValidJsonRecord) {
+    if (data?.content) {
+      const content = data.content;
+      delete data.content;
+      data.__content = {};
+      Assert(IsRecord(IsString, IsString), content);
+      for (const key in content) {
+        const input = Path.join("./SeriesContent", id, key + ".html");
+        Fs.outputFileSync(input, content[key]);
+        data.__content[key] = input;
+      }
+    }
+
+    super(id, data);
+  }
+
   @Serialisable(IsString)
   accessor title!: string;
 
@@ -138,7 +251,28 @@ export class Series extends Jsonified {
   accessor template!: Template;
 
   @Serialisable(IsRecord(IsString, IsString))
-  accessor content!: Record<string, string>;
+  accessor __content!: Record<string, string>;
+
+  get content() {
+    const result: Record<string, string> = {};
+    for (const key in this.__content) {
+      result[key] = Fs.readFileSync(this.__content[key], "utf-8");
+    }
+
+    return result;
+  }
+
+  set content(content: Record<string, string>) {
+    const result: Record<string, string> = {};
+    Assert(IsRecord(IsString, IsString), content);
+    for (const key in content) {
+      const input = Path.join("./SeriesContent", this.physical_id, key + ".html");
+      Fs.outputFileSync(input, content[key]);
+      result[key] = input;
+    }
+
+    this.__content = result;
+  }
 
   @Child(Template)
   accessor item_template!: Template;

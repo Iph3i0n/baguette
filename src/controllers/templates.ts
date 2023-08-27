@@ -3,7 +3,7 @@ import Hapi from "@hapi/hapi";
 import Controller, { Handler } from "../server";
 import { All } from "../jsonified";
 import { Template, DataType, IsDataType } from "../models";
-import { Assert, IsArray, IsObject, IsRecord, IsString, Optional } from "@ipheion/safe-type";
+import { Assert, IsArray, IsObject, IsString, Optional } from "@ipheion/safe-type";
 
 const IsField = IsObject({ name: IsString, type: IsDataType });
 

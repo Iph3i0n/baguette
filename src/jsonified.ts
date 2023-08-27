@@ -17,7 +17,7 @@ const TypeMap = Symbol();
 
 type Constructor<T> = new (...args: any[]) => T;
 
-interface ValidJsonRecord extends Record<string, ValidJsonValue> {}
+export interface ValidJsonRecord extends Record<string, ValidJsonValue> {}
 interface ValidJsonArray extends Array<ValidJsonValue> {}
 type ValidJsonValue =
   | string

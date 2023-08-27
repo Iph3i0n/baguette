@@ -42,8 +42,8 @@ export default class AppData extends Controller {
   })
   async PostFile(request: Hapi.Request, h: Hapi.ResponseToolkit) {
     const file: any = (request.payload as any).file;
-    await Fs.outputFile(Path.join("./static", file.filename), await Fs.readFile(file.path));
-    return { url: `/static/${file.filename}` };
+    await Fs.outputFile(Path.join("./static", 'images', file.filename), await Fs.readFile(file.path));
+    return { url: `/static/images/${file.filename}` };
   }
 
   @Handler("POST", "/compile")
