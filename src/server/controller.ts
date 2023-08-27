@@ -5,21 +5,21 @@ import { HandlerFunction } from "./handler";
 
 export default abstract class Controller {
   readonly #url: string;
-  readonly #handlers: Array<[string, string, HandlerFunction]> = [];
+  readonly #handlers: Array<[string, string, HandlerFunction, Hapi.RouteOptions]> = [];
 
   constructor(url: string) {
     this.#url = url;
   }
 
-  RegisterHandler(method: string, subroute: string, handler: HandlerFunction) {
-    this.#handlers.push([method, subroute, handler]);
+  RegisterHandler(method: string, subroute: string, handler: HandlerFunction, options: Hapi.RouteOptions) {
+    this.#handlers.push([method, subroute, handler, options]);
   }
 
   get Url() {
     return this.#url;
   }
 
-  get Handlers(): Array<[string, string, HandlerFunction]> {
+  get Handlers(): Array<[string, string, HandlerFunction, Hapi.RouteOptions]> {
     return this.#handlers;
   }
 

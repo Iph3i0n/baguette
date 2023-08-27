@@ -1,10 +1,19 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="https://cdn.jsdelivr.net/npm/@ipheion/bakery@0.5.16"></script>
-    <!-- <script src="/bakery.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/@ipheion/bakery@0.5.17"></script>
     <script>
       window.empty = "";
+
+      document.addEventListener("DOMContentLoaded", (event) => {
+        document.body.addEventListener("FileAdded", (event) => {
+          const input = new FormData();
+          input.append("file", event.File);
+          event.URL = fetch("/api/app-data/static", { method: "POST", body: input })
+            .then((r) => r.json())
+            .then((j) => j.url);
+        });
+      });
     </script>
   </head>
   <body>
@@ -19,6 +28,33 @@
     <u-fetch url="/api/app-data" name="data">
       <div>
         <l-container>
+          <u-route path="/" exact>
+            <l-row>
+              <l-col xs="12">
+                <f-button type="button" onclick="fetch('/api/app-data/compile', { method: 'post' })">Build the App</f-button>
+              </l-col>
+            </l-row>
+            <d-card>
+              <span slot="title">Initialise Your Project</span>
+              <f-form url="/api/app-data/init" success-url="/templates" method="post">
+                <l-row>
+                  <l-col xs="12">
+                    <f-input name="package_name">Package Name</f-input>
+                  </l-col>
+                  <l-col xs="12">
+                    <f-toggle name="use_pages" prefill="on">
+                      Use GitHub pages?
+                      <span slot="on">Yes</span>
+                      <span slot="off">No</span>
+                    </f-toggle>
+                  </l-col>
+                  <l-col xs="12">
+                    <f-button type="submit">Initialise Site</f-button>
+                  </l-col>
+                </l-row>
+              </f-form>
+            </d-card>
+          </u-route>
           <u-route path="/pages">
             <l-templated use="/components/pages" remote></l-templated>
           </u-route>

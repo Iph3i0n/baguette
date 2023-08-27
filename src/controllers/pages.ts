@@ -14,6 +14,11 @@ export default class PagesController extends Controller {
     return this.View("index", h);
   }
 
+  @Handler("GET", "/static/{name}")
+  async Static(request: Hapi.Request, h: Hapi.ResponseToolkit) {
+    return h.file(path.join("./static", request.params.name));
+  }
+
   @Handler("GET", "/components/{name}")
   async Component(request: Hapi.Request, h: Hapi.ResponseToolkit) {
     return this.View(`components/${request.params.name}`, h);

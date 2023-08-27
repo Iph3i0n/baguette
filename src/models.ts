@@ -1,7 +1,7 @@
 import { IsDate, IsOneOf, IsRecord, IsString, IsType, Optional } from "@ipheion/safe-type";
 import Jsonified, { Child, Children, Serialisable } from "./jsonified";
 
-export const DataTypes = ["text", "rich_text", "boolean", "number"] as const;
+export const DataTypes = ["text", "rich_text", "boolean", "number", "image"] as const;
 
 export const IsDataType = IsOneOf(...DataTypes);
 

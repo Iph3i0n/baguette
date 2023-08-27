@@ -234,6 +234,11 @@
                               <u-text use=":this.state.field.name"></u-text>
                             </f-numeric>
                           </u-if>
+                          <u-if check=":this.state.field.type === 'image'">
+                            <f-image name=":`content.${this.state.field.name}`" prefill=":this.state.article?.content[this.state.field.name] ?? window.empty">
+                              <u-text use=":this.state.field.name"></u-text>
+                            </f-image>
+                          </u-if>
                         </l-col>
                       </u-each>
                     </l-row>

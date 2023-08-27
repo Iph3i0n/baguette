@@ -1,4 +1,5 @@
 import Hapi from "@hapi/hapi";
+import inert from "@hapi/inert";
 import Controller from "./controller";
 import { DoNotCare, IsRecord, IsString, IsSymbol, IsUnion } from "@ipheion/safe-type";
 import set from "lodash/set";
@@ -16,16 +17,24 @@ function ParsePayload(payload: unknown) {
   return result;
 }
 
-export default function Start(...controllers: Array<FinalContoller>) {
-  const server = Hapi.server({ port: 3000, debug: { request: ["error"] }, routes: { files: { relativeTo: "./static" } } });
+export default async function Start(...controllers: Array<FinalContoller>) {
+  const server = Hapi.server({
+    port: 3000,
+    debug: { request: ["error"] },
+  });
+
+  await server.register({
+    plugin: inert,
+  });
 
   for (const controller of controllers) {
     const instance = new controller();
-    for (const [method, subroute, handler] of instance.Handlers) {
+    for (const [method, subroute, handler, options] of instance.Handlers) {
       server.route({
         method,
         path: instance.Url + subroute,
         handler: (r, h, t) => handler.call(instance, r, h, t, ParsePayload(r.payload)),
+        options,
       });
     }
   }
