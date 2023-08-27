@@ -54,7 +54,7 @@ export default class AppData extends Controller {
   @Handler("POST", "/init")
   async Init(request: Hapi.Request, h: Hapi.ResponseToolkit, _: any, data: unknown) {
     Assert(IsSiteSetup, data);
-    await Fs.outputFile(".gitignore", "site");
+    await Fs.outputFile(".gitignore", "site\nnode_modules");
     await Fs.outputJSON(
       "package.json",
       {
