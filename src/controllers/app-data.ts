@@ -63,6 +63,7 @@ export default class AppData extends Controller {
         private: true,
         scripts: {
           build: "baguette render",
+          dev: "baguette develop"
         },
         devDependencies: {
           "@ipheion/baguette": "0.0.1",
