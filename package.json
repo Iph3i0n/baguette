@@ -9,7 +9,8 @@
   "scripts": {
     "test": "jest",
     "build": "rm -rf dist && tsc",
-    "debug": "npm run build && (cd ../paul-blog && baguette develop)"
+    "debug": "npm run build && (cd ../paul-blog && baguette develop)",
+    "prepublish": "npm run build"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.1",
