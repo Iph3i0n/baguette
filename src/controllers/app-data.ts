@@ -8,6 +8,7 @@ import Fs from "fs-extra";
 import Path from "path";
 import { RenderApp } from "../render";
 import { Assert, IsObject, IsOneOf, IsString, Optional } from "@ipheion/safe-type";
+import path from "path";
 
 const IsSiteSetup = IsObject({
   package_name: IsString,
@@ -54,7 +55,12 @@ export default class AppData extends Controller {
   @Handler("POST", "/init")
   async Init(request: Hapi.Request, h: Hapi.ResponseToolkit, _: any, data: unknown) {
     Assert(IsSiteSetup, data);
-    await Fs.outputFile(".gitignore", "site\nnode_modules");
+    await Fs.copyFile(path.join(__dirname, "../../templates/.gitignore"), "./.gitignore");
+    if (data.use_pages === "on") {
+      await Fs.ensureDir("./.github/workflows");
+      await Fs.copyFile(path.join(__dirname, "../../templates/pages.yml"), "./.github/workflows/pages.yml");
+    }
+
     await Fs.outputJSON(
       "package.json",
       {
@@ -63,49 +69,14 @@ export default class AppData extends Controller {
         private: true,
         scripts: {
           build: "baguette render",
-          dev: "baguette develop"
+          dev: "baguette develop",
         },
         devDependencies: {
-          "@ipheion/baguette": "0.0.1",
+          "@ipheion/baguette": "0.0.2",
         },
       },
       { spaces: 2 }
     );
-    if (data.use_pages === "on")
-      await Fs.outputFile(
-        "./.github/workflows/pages.yml",
-        `name: Pages
-on:
-  push:
-    tags:
-      - "*"
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Use Node.js 18.12.1
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.12.1
-      - run: npm install
-      - run: npm run build
-      - name: Setup Pages
-        uses: actions/configure-pages@v2
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: "./site"
-      - name: Deploy to Pages
-        id: deployment
-        uses: actions/deploy-pages@v1`
-      );
     return { success: true };
   }
 }
