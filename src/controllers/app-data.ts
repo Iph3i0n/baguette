@@ -32,7 +32,7 @@ export default class AppData extends Controller {
     };
   }
 
-  @Handler("POST", "/static", {
+  @Handler("POST", "/static/images", {
     payload: {
       output: "stream",
       parse: true,

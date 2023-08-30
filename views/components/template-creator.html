@@ -1,50 +1,31 @@
-<u-global var="__unused" name="layout" default="undefined">
+<u-use var=":this.state.page?.template.name" name="layout">
   <l-row>
     <l-col xs="12">
       <f-singleselect
         name="template"
         options=":this.state.data.templates.map(a => ({ text: a, value: a }))"
         onValueChanged="this.state.layout = this.value"
-        prefill=":this.state.page?.template.name ?? ''"
+        prefill=":this.state.layout"
       >
         <span slot="label">Template</span>
       </f-singleselect>
     </l-col>
     <l-col xs="12">
-      <u-if check=":this.state.layout || this.state.page?.template.name">
-        <u-fetch url="/api/templates/{{this.state.layout ?? this.state.page?.template.name}}" name="layout_format">
+      <u-if check=":this.state.layout">
+        <u-fetch url="/api/templates/{{this.state.layout}}" name="layout_format">
           <d-card>
             <span slot="title">Content</span>
             <l-row>
               <u-each subject=":this.state.layout_format.fields" name="field">
                 <l-col xs="12">
-                  <u-if check=":this.state.field.type === 'text'">
-                    <f-input name=":`content.${this.state.field.name}`" prefill=":this.state.page?.content[this.state.field.name] ?? window.empty">
-                      <u-text use=":this.state.field.name"></u-text>
-                    </f-input>
-                  </u-if>
-                  <u-if check=":this.state.field.type === 'rich_text'">
-                    <f-richtext name=":`content.${this.state.field.name}`" prefill=":this.state.page?.content[this.state.field.name] ?? window.empty">
-                      <u-text use=":this.state.field.name"></u-text>
-                    </f-richtext>
-                  </u-if>
-                  <u-if check=":this.state.field.type === 'boolean'">
-                    <f-toggle name=":`content.${this.state.field.name}`" prefill=":this.state.page?.content[this.state.field.name] ?? window.empty">
-                      <u-text use=":this.state.field.name"></u-text>
-                      <span slot="on">On</span>
-                      <span slot="off">Off</span>
-                    </f-toggle>
-                  </u-if>
-                  <u-if check=":this.state.field.type === 'number'">
-                    <f-numeric name=":`content.${this.state.field.name}`" prefill=":this.state.page?.content[this.state.field.name] ?? window.empty">
-                      <u-text use=":this.state.field.name"></u-text>
-                    </f-numeric>
-                  </u-if>
-                  <u-if check=":this.state.field.type === 'image'">
-                    <f-image name=":`content.${this.state.field.name}`" prefill=":this.state.page?.content[this.state.field.name] ?? window.empty">
-                      <u-text use=":this.state.field.name"></u-text>
-                    </f-image>
-                  </u-if>
+                  <l-templated
+                    use=":`/components/item-${this.state.field.type}`"
+                    name=":this.state.field.name"
+                    prefill=":this.state.page?.content[this.state.field.name] ?? window.empty"
+                    remote
+                  >
+                    <u-text use=":this.state.field.name"></u-text>
+                  </l-templated>
                 </l-col>
               </u-each>
             </l-row>
@@ -53,4 +34,4 @@
       </u-if>
     </l-col>
   </l-row>
-</u-global>
+</u-use>

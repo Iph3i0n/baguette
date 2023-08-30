@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="https://cdn.jsdelivr.net/npm/@ipheion/bakery@0.5.17"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@ipheion/bakery@0.5.20"></script> -->
+    <script src="/bakery.js"></script>
     <script>
       window.empty = "";
 
       document.addEventListener("DOMContentLoaded", (event) => {
-        document.body.addEventListener("FileAdded", (event) => {
+        document.body.addEventListener("ImageAdded", (event) => {
           const input = new FormData();
           input.append("file", event.File);
-          event.URL = fetch("/api/app-data/static", { method: "POST", body: input })
+          event.URL = fetch("/api/app-data/static/images", { method: "POST", body: input })
             .then((r) => r.json())
             .then((j) => j.url);
         });
