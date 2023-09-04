@@ -30,10 +30,14 @@ export default async function Start(...controllers: Array<FinalContoller>) {
   for (const controller of controllers) {
     const instance = new controller();
     for (const [method, subroute, handler, options] of instance.Handlers) {
+      const path = instance.Url + subroute;
       server.route({
         method,
-        path: instance.Url + subroute,
-        handler: (r, h, t) => handler.call(instance, r, h, t, ParsePayload(r.payload)),
+        path,
+        handler: (r, h, t) => {
+          console.log(`Handling call for ${method} at ${path}`);
+          return handler.call(instance, r, h, t, ParsePayload(r.payload));
+        },
         options,
       });
     }
